@@ -20,7 +20,9 @@ var SimplybookWidget = function (options) {
         'button_preload': true,
         'button_custom_id': null,
         'navigate': 'book'
+        'block_id': null,
     };
+
     this.modalsPositions = {};
     this.name = 'widget_' + Math.random();
     this.frame = null;
@@ -221,9 +223,24 @@ SimplybookWidget.prototype.updateWidgetSize = function (data) {
 };
 
 SimplybookWidget.prototype.displayIframe = function () {
-    document.write(
+    const widgetBlock = this.options.block_id ? document.getElementById(this.options.block_id) : null;
+    if (widgetBlock) {
+      const iframe = document.createElement('iframe');
+      iframe.scrolling = 'no';
+      iframe.classList.add('sb-widget-iframe');
+      iframe.width = '100%';
+      iframe.border = '0';
+      iframe.frameborder = '0';
+      iframe.src = `${this.getUrl()}`;
+      iframe.name = `${this.name}`;
+      iframe.id = `${this.name}`;
+      widgetBlock.appendChild(iframe);
+    } else {
+      document.write(
         '<iframe scrolling="no" class="sb-widget-iframe" width="100%" border="0" frameborder="0" src="' + this.getUrl() + '" name="' + this.name + '" id="' + this.name + '"></iframe>'
-    );
+      );
+    }
+
     this.frame = document.getElementById(this.name);
 
     this.subscribeMessages();
